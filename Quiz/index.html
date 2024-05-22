@@ -12,11 +12,11 @@
         <p>Be careful when filling out the form</p>
         <form id="math-quiz">
             <div class="question">
-                <p>2x + 6y = 22, x + y = 5 What is x?</p>
-                <label><input type="radio" name="q1" value="1"> 1</label><br>
-                <label><input type="radio" name="q1" value="2"> 2</label><br>
-                <label><input type="radio" name="q1" value="3"> 3</label><br>
-                <label><input type="radio" name="q1" value="none"> None</label>
+                <p>What is 5 + 3?</p>
+                <label><input type="radio" name="q1" value="7"> 7</label><br>
+                <label><input type="radio" name="q1" value="8"> 8</label><br>
+                <label><input type="radio" name="q1" value="9"> 9</label><br>
+                <label><input type="radio" name="q1" value="10"> 10</label>
             </div>
             <div class="question">
                 <p>Find the sum of numbers between 1 and 20 (1 and 20 included):</p>
@@ -40,18 +40,20 @@
                 <label><input type="radio" name="q4" value="none"> None</label>
             </div>
             <div class="question">
-                <p>What is 5 + 3?</p>
-                <label><input type="radio" name="q5" value="7"> 7</label><br>
-                <label><input type="radio" name="q5" value="8"> 8</label><br>
-                <label><input type="radio" name="q5" value="9"> 9</label><br>
-                <label><input type="radio" name="q5" value="10"> 10</label>
+                <p>2x + 6y = 22, x + y = 5 What is x?</p>
+                <label><input type="radio" name="q5" value="1"> 1</label><br>
+                <label><input type="radio" name="q5" value="2"> 2</label><br>
+                <label><input type="radio" name="q5" value="3"> 3</label><br>
+                <label><input type="radio" name="q5" value="none"> None</label>
             </div>
             <button type="button" onclick="checkAnswers()">Submit</button>
         </form>
         <div id="score-container">
-            <label for="score">Level:</label>
+            <label for="score">Score:</label>
             <input type="text" id="score" readonly value="0">
         </div>
+        <br>
+        <div id="level-container"></div>
     </div>
     <script src="script.js"></script>
 </body>
