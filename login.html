@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="indexstyles.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.js">
+    </script>
+</head>
+<body onload="brython()">
+        <div class="topnav">
+    <!-- Logo and Title -->
+    <div class="logo">
+        <img src="logo.png" alt="Logo">
+        <div>
+            <h1 class="title">Mathscape VR</h1>
+            <p class="subtitle">Math as never seen before !</p>
+        </div>
+   </div>
+
+    <!-- Menu Buttons -->
+    <div class="menu">
+        <a href="museum.html">
+        <button class="museum-btn">Museum</button>
+        </a>
+        <a href="login.html">
+        <button class="login-btn">Login</button>
+        </a>
+        <a href="register.html">
+        <button class="signup-btn">Sign Up</button>
+        </a>
+    </div>
+</div>
+
+
+<div class="main">
+   <!-- Login Form -->
+    <h1>Login</h1>
+    <form id="loginForm">
+        <label for="loginUsername">Username:</label>
+        <input type="text" id="loginUsername" required><br>
+        <label for="loginPassword">Password:</label>
+        <input type="password" id="loginPassword" required><br>
+        <p id="loginMessage"></p>
+        <button type="button" id="loginButton">Login</button>
+    </form>
+    <p class="logreg">New user? <a href="register.html">Sign up</a>.</p>
+
+</div>
+
+    <script type="text/python">
+from browser import document, window
+
+class UserManager:
+    def __init__(self):
+        """Initialize the user manager and load users from LocalStorage."""
+        if not window.localStorage.getItem("users"):
+            window.localStorage.setItem("users", "[]")
+        self.users = eval(window.localStorage.getItem("users"))
+
+    def save_users(self):
+        """Save the users list back to LocalStorage."""
+        window.localStorage.setItem("users", str(self.users))
+
+    def register(self, username, password):
+        """Register a new user."""
+        if any(user["username"] == username for user in self.users):
+            document["registerMessage"].text = "Error: Username is already taken."
+            return
+        self.users.append({"username": username, "password": password})
+        self.save_users()
+        document["registerMessage"].text = f"Registration successful for {username}!"
+
+    def login(self, username, password):
+        """Authenticate a user."""
+        user = next((user for user in self.users if user["username"] == username and user["password"] == password), None)
+        if user:
+            document["loginMessage"].text = f"Login successful! Welcome, {user['username']}."
+        else:
+            document["loginMessage"].text = "Error: Invalid username or password."             
+
+
+# Event Handlers
+def handle_register(event):
+    """Handle the register button click."""
+    event.preventDefault()
+    username = document["registerUsername"].value.strip()
+    password = document["registerPassword"].value.strip()
+
+    if not username or not password:
+        document["registerMessage"].text = "All fields are required."
+        return
+
+    manager.register(username, password)
+
+def handle_login(event):
+    """Handle the login button click."""
+    event.preventDefault()
+    username = document["loginUsername"].value.strip()
+    password = document["loginPassword"].value.strip()
+
+    if not username or not password:
+        document["loginMessage"].text = "All fields are required."
+        return
+
+    manager.login(username, password)
+
+
+# Initialize UserManager and Bind Events
+manager = UserManager()
+document["loginButton"].bind("click", handle_login)
+    </script>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-left">
+                <h1 class="footer-item">About Us</h1>
+                <p class="footer-item"><i class="fa-solid fa-location-dot"></i> Sidi Abdellah Scientific Pole, Algiers, Algeria</p>
+                <p class="footer-item"><i class="fa-brands fa-instagram"></i> <a href="https://www.instagram.com/math._scapevr">Mathscape VR on Instagram</a></p>
+                <p class="footer-item"><i class="fa-brands fa-facebook-f"></i> <a href="https://www.facebook.com/profile.php?id=61560068546777">Mathscape VR on Facebook</a></p>
+                <p class="footer-item"><i class="fa-regular fa-envelope"></i> <a href="mailto:mathscape.vr@gmail.com">mathscape.vr@gmail.com</a></p>
+            </div>
+
+            <div class="footer-right">
+                <img src="NHSM_logo.webp" alt="" class="nhsmlogo">
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

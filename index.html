@@ -6,6 +6,7 @@
     <title>Mathscape VR</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="indexstyles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,17 +14,37 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.js">
+    </script>
+
+
 </head>
-<body>
-    <header>
-        <a href="/index.html">
-        <img src="logo.png" alt="" class="logo">
-        </a>
-         <div>
+<body onload="brython()">
+    <div class="topnav">
+    <!-- Logo and Title -->
+    <div class="logo">
+        <img src="logo.png" alt="Logo">
+        <div>
             <h1 class="title">Mathscape VR</h1>
             <p class="subtitle">Math as never seen before !</p>
         </div>
-    </header>
+   </div>
+
+    <!-- Menu Buttons -->
+    <div class="menu">
+        <a href="museum.html">
+        <button class="museum-btn">Museum</button>
+        </a>
+        <a href="login.html">
+        <button class="login-btn">Login</button>
+        </a>
+        <a href="register.html">
+        <button class="signup-btn">Sign Up</button>
+        </a>
+    </div>
+</div>
 
     <div class="hero">
         <div class="hero-title">
@@ -47,37 +68,129 @@
         </div>
 
         <h1>Our Courses</h1>
-        <div class="courses">
-            <div class="course-card">
-                <img src="course.png" alt="" class="course-img">
-                <h3>Primary School</h3>
-                <p></p>
-            </div>
+    <div id="courses"></div>
 
-            <div class="course-card">
-                <img src="course.png" alt="" class="course-img">
-                <h3>Middle School</h3>
-                <p></p>
-            </div>
+    <script type="text/python">
+from browser import document, html
 
-            <div class="course-card">
-                <img src="course.png" alt="" class="course-img">
-                <h3>High School</h3>
-                <p></p>
-            </div>
+class Lesson:
+    def __init__(self, title):
+        self.title = title
 
-            <div class="course-card">
-                <img src="course.png" alt="" class="course-img">
-                <h3>University</h3>
-                <p></p>
-            </div>
+class Year:
+    def __init__(self, year_name):
+        self.year_name = year_name
+        self.lessons = []
 
-            <div class="course-card">
-                <img src="course.png" alt="" class="course-img">
-                <h3>Advanced</h3>
-                <p></p>
-            </div>
-        </div>
+    def add_lesson(self, lesson):
+        """Add a lesson to the year."""
+        self.lessons.append(lesson)
+
+    def display(self, parent_element):
+        """Display the year and its lessons."""
+        year_div = html.DIV(Class="year")
+        year_header = html.DIV(Class="year-header")
+        year_header <= html.SPAN("▶", Class="dropdown-arrow")
+        year_header <= html.SPAN(self.year_name)
+        year_div <= year_header
+
+        lessons_list = html.UL(Class="lessons")
+        for lesson in self.lessons:
+            lessons_list <= html.LI(lesson.title)
+        year_div <= lessons_list
+
+        def toggle_year(evt):
+            lessons_list.classList.toggle("expanded-content")
+            arrow = year_header.select_one(".dropdown-arrow")
+            if "expanded-content" in lessons_list.classList:
+                arrow.style.transform = "rotate(90deg)"
+            else:
+                arrow.style.transform = "rotate(0deg)"
+
+        year_header.bind("click", toggle_year)
+        parent_element <= year_div
+
+class Level:
+    def __init__(self, level_name):
+        self.level_name = level_name
+        self.years = []
+
+    def add_year(self, year):
+        """Add a year to the level."""
+        self.years.append(year)
+
+    def display(self, parent_element):
+        """Display the level and its years."""
+        level_div = html.DIV(Class="level")
+        level_header = html.DIV(Class="level-header")
+        level_header <= html.SPAN("▶", Class="dropdown-arrow")
+        level_header <= html.H2(self.level_name)
+        
+        level_content = html.DIV(Class="level-content")
+        for year in self.years:
+            year.display(level_content)
+
+        def toggle_level(evt):
+            level_content.classList.toggle("expanded-content")
+            arrow = level_header.select_one(".dropdown-arrow")
+            if "expanded-content" in level_content.classList:
+                arrow.style.transform = "rotate(90deg)"
+            else:
+                arrow.style.transform = "rotate(0deg)"
+
+        level_header.bind("click", toggle_level)
+        
+        level_div <= level_header
+        level_div <= level_content
+        parent_element <= level_div
+
+
+# Initialize levels
+primary_school = Level("Primary School")
+middle_school = Level("Middle School")
+high_school = Level("High School")
+university = Level("University")
+
+# Add years and lessons for Primary School
+for i in range(1, 6):
+    year = Year(f"Year {i}")
+    year.add_lesson(Lesson(f"Addition and Subtraction {i}"))
+    year.add_lesson(Lesson(f"Multiplication and Division {i}"))
+    year.add_lesson(Lesson(f"Basic Geometry {i}"))
+    primary_school.add_year(year)
+
+# Add years and lessons for Middle School
+for i in range(1, 5):
+    year = Year(f"Year {i}")
+    year.add_lesson(Lesson(f"Fractions and Decimals {i}"))
+    year.add_lesson(Lesson(f"Introduction to Algebra {i}"))
+    year.add_lesson(Lesson(f"Basic Probability {i}"))
+    middle_school.add_year(year)
+
+# Add years and lessons for High School
+for i in range(1, 4):
+    year = Year(f"Year {i}")
+    year.add_lesson(Lesson(f"Advanced Algebra {i}"))
+    year.add_lesson(Lesson(f"Trigonometry {i}"))
+    year.add_lesson(Lesson(f"Calculus Basics {i}"))
+    high_school.add_year(year)
+
+# Add years and lessons for University
+for i in range(1, 6):
+    year = Year(f"Year {i}")
+    year.add_lesson(Lesson(f"Linear Algebra {i}"))
+    year.add_lesson(Lesson(f"Differential Equations {i}"))
+    year.add_lesson(Lesson(f"Advanced Calculus {i}"))
+    university.add_year(year)
+
+# Display all levels
+courses_div = document["courses"]
+primary_school.display(courses_div)
+middle_school.display(courses_div)
+high_school.display(courses_div)
+university.display(courses_div)
+    </script>
+
 
         <div class="test-prompt">
             <h2>Not sure which course to take?</h2>

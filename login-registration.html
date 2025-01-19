@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Registration</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.js">
+    </script>
+</head>
+<body onload="brython()">
+    <h1>Login and Registration System</h1>
+
+    <!-- Registration Form -->
+    <h2>Register</h2>
+    <form id="registerForm">
+        <label for="registerUsername">Username:</label>
+        <input type="text" id="registerUsername" required><br>
+        <label for="registerPassword">Password:</label>
+        <input type="password" id="registerPassword" required><br>
+        <p id="registerMessage"></p>
+        <button type="button" id="registerButton">Register</button>
+    </form>
+
+    <!-- Login Form -->
+    <h2>Login</h2>
+    <form id="loginForm">
+        <label for="loginUsername">Username:</label>
+        <input type="text" id="loginUsername" required><br>
+        <label for="loginPassword">Password:</label>
+        <input type="password" id="loginPassword" required><br>
+        <p id="loginMessage"></p>
+        <button type="button" id="loginButton">Login</button>
+    </form>
+
+    <script type="text/python">
+from browser import document, window
+
+class UserManager:
+    def __init__(self):
+        """Initialize the user manager and load users from LocalStorage."""
+        if not window.localStorage.getItem("users"):
+            window.localStorage.setItem("users", "[]")
+        self.users = eval(window.localStorage.getItem("users"))
+
+    def save_users(self):
+        """Save the users list back to LocalStorage."""
+        window.localStorage.setItem("users", str(self.users))
+
+    def register(self, username, password):
+        """Register a new user."""
+        if any(user["username"] == username for user in self.users):
+            document["registerMessage"].text = "Error: Username is already taken."
+            return
+        self.users.append({"username": username, "password": password})
+        self.save_users()
+        document["registerMessage"].text = f"Registration successful for {username}!"
+
+    def login(self, username, password):
+        """Authenticate a user."""
+        user = next((user for user in self.users if user["username"] == username and user["password"] == password), None)
+        if user:
+            document["loginMessage"].text = f"Login successful! Welcome, {user['username']}."
+        else:
+            document["loginMessage"].text = "Error: Invalid username or password."
+
+
+# Event Handlers
+def handle_register(event):
+    """Handle the register button click."""
+    event.preventDefault()
+    username = document["registerUsername"].value.strip()
+    password = document["registerPassword"].value.strip()
+
+    if not username or not password:
+        document["registerMessage"].text = "All fields are required."
+        return
+
+    manager.register(username, password)
+
+def handle_login(event):
+    """Handle the login button click."""
+    event.preventDefault()
+    username = document["loginUsername"].value.strip()
+    password = document["loginPassword"].value.strip()
+
+    if not username or not password:
+        document["loginMessage"].text = "All fields are required."
+        return
+
+    manager.login(username, password)
+
+
+# Initialize UserManager and Bind Events
+manager = UserManager()
+document["registerButton"].bind("click", handle_register)
+document["loginButton"].bind("click", handle_login)
+    </script>
+</body>
+</html>
